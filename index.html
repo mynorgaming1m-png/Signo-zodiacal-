@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oráculo de Compatibilidad Astral</title>
+    <style>
+        :root {
+            --gold: #e1b12c;
+            --deep-blue: #0a0e17;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Estrellas animadas de fondo */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 100px 150px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 250px 300px, rgba(255,255,255,0.3), rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 300px 300px;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(225, 177, 44, 0.3);
+            border-radius: 25px;
+            padding: 35px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--gold);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(225, 177, 44, 0.4);
+        }
+
+        .input-box {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(225, 177, 44, 0.4);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        input[type="date"]:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(225, 177, 44, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background: linear-gradient(45deg, #d4af37, #f1c40f);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.4s;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(225, 177, 44, 0.4);
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px border dashed var(--gold);
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .signo-title {
+            font-size: 1.4rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .veredicto {
+            font-style: italic;
+            line-height: 1.6;
+            color: #ecf0f1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>✧ Oráculo Astral ✧</h1>
+    
+    <div class="input-box">
+        <label>Tu Fecha de Nacimiento:</label>
+        <input type="date" id="userDate">
+    </div>
+
+    <div class="input-box">
+        <label>Fecha de tu Pareja:</label>
+        <input type="date" id="partnerDate">
+    </div>
+
+    <button onclick="calculate()">Revelar Destino</button>
+
+    <div id="result">
+        <span id="signoDisplay" class="signo-title"></span>
+        <div id="textDisplay" class="veredicto"></div>
+    </div>
+</div>
+
+<script>
+    function getZodiac(dateString) {
+        // Corregimos el desfase horario añadiendo la hora
+        const date = new Date(dateString + "T12:00:00");
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+
+        if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) return { n: "Acuario ♒", e: "Aire" };
+        if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) return { n: "Piscis ♓", e: "Agua" };
+        if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) return { n: "Aries ♈", e: "Fuego" };
+        if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) return { n: "Tauro ♉", e: "Tierra" };
+        if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) return { n: "Géminis ♊", e: "Aire" };
+        if ((month == 6 && day >= 21) || (month == 7 && day <= 22)) return { n: "Cáncer ♋", e: "Agua" };
+        if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) return { n: "Leo ♌", e: "Fuego" };
+        if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) return { n: "Virgo ♍", e: "Tierra" };
+        if ((month == 9 && day >= 23) || (month == 10 && day <= 22)) return { n: "Libra ♎", e: "Aire" };
+        if ((month == 10 && day >= 23) || (month == 11 && day <= 21)) return { n: "Escorpio ♏", e: "Agua" };
+        if ((month == 11 && day >= 22) || (month == 12 && day <= 21)) return { n: "Sagitario ♐", e: "Fuego" };
+        return { n: "Capricornio ♑", e: "Tierra" };
+    }
+
+    function calculate() {
+        const d1 = document.getElementById('userDate').value;
+        const d2 = document.getElementById('partnerDate').value;
+        const resDiv = document.getElementById('result');
+
+        if (!d1 || !d2) {
+            alert("Por favor, selecciona ambas fechas.");
+            return;
+        }
+
+        const s1 = getZodiac(d1);
+        const s2 = getZodiac(d2);
+
+        let msg = "";
+        
+        // Lógica de elementos
+        if (s1.e === s2.e) {
+            msg = `Al ser ambos de <b>${s1.e}</b>, su conexión es inmediata y profunda. Comparten la misma forma de sentir y ver la vida.`;
+        } else if ((s1.e === "Fuego" && s2.e === "Aire") || (s1.e === "Aire" && s2.e === "Fuego")) {
+            msg = `¡Una pareja brillante! El Aire aviva al Fuego. Hay mucha chispa, comunicación constante y aventuras compartidas.`;
+        } else if ((s1.e === "Tierra" && s2.e === "Agua") || (s1.e === "Agua" && s2.e === "Tierra")) {
+            msg = `Combinación de gran estabilidad. El Agua nutre la Tierra, permitiendo que el amor crezca con raíces muy fuertes y seguras.`;
+        } else if ((s1.e === "Fuego" && s2.e === "Tierra") || (s1.e === "Tierra" && s2.e === "Fuego")) {
+            msg = `Es una relación de esfuerzo pero muy sólida. El Fuego aporta la pasión y la Tierra el orden. Se ayudan a crecer mutuamente.`;
+        } else {
+            msg = `Elementos opuestos que se atraen con fuerza. Aprenderán mucho el uno del otro, logrando un equilibrio que pocos consiguen.`;
+        }
+
+        document.getElementById('signoDisplay').innerHTML = `${s1.n} + ${s2.n}`;
+        document.getElementById('textDisplay').innerHTML = msg;
+        resDiv.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
